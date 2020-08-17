@@ -4,10 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 let prefix = "";
+if (location.protocol == "http:") {
+  prefix = "ws"
+} else if (location.protocol == "https:") {
+  prefix = "wss"
+}
 if (process.env.NODE_ENV == "development") {
-  prefix = "ws://localhost:4000/checkout"
+  prefix += "://localhost:4000/checkout"
 } else if (process.env.NODE_ENV == "production") {
-  prefix = "ws://8.210.48.126:4000/checkout"
+  prefix += "://gdhb.lemonneko.moe:4000/checkout"
 }
 
 export enum State{
