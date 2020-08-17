@@ -73,47 +73,47 @@
 </template>
 
 <script lang="ts">
-    import Vue from "vue"
-    import {State} from "@/store";
+import Vue from "vue"
+import {State} from "@/store";
 
-    export default Vue.extend({
-        name: "Main",
-        data: () => ({
-            snackbar: false,
-            btnText: "开始",
-            resetBtn: "重置状态",
-            errorMessage: "",
-            help: false
-        }),
-        mounted() {
-            this.$store.state.messageListeners.add(this.onMessage)
-            this.$store.state.closeListeners.add(this.onClose)
-        },
-        methods: {
-            getDownloadLink() {
-                const url = this.$store.state.urlToDownload
-                if (url == "") {
-                    this.$data.snackbar = true
-                    setTimeout(() => this.$data.snackbar = false, 1500)
-                    return
-                }
+export default Vue.extend({
+  name: "Main",
+  data: () => ({
+    snackbar: false,
+    btnText: "开始",
+    resetBtn: "重置状态",
+    errorMessage: "",
+    help: false
+  }),
+  mounted() {
+    this.$store.state.messageListeners.add(this.onMessage)
+    this.$store.state.closeListeners.add(this.onClose)
+  },
+  methods: {
+    getDownloadLink() {
+      const url = this.$store.state.urlToDownload
+      if (url == "") {
+        this.$data.snackbar = true
+        setTimeout(() => this.$data.snackbar = false, 1500)
+        return
+      }
                 const ws = this.$store.state.ws
                 ws.send(url)
             },
             onMessage(ws: WebSocket, e: MessageEvent) {
-                if (process.env.VUE_APP_MODE == "development") {
-                    console.log(e.data)
-                }
-                const message = JSON.parse(e.data)
-                if (message.status == "parsing") {
-                    this.$data.btnText = "正在解析"
-                    this.$store.state.textFieldDisabled = true
-                    this.$store.state.btnDisabled = true
-                    this.$store.state.theState = State.PARSING
-                } else if (message.status == "downloading") {
-                    this.$data.btnText = "正在远程下载"
-                    this.$store.state.theState = State.DOWNLOADING
-                    this.$store.state.progress = message.text
+              if (process.env.NODE_ENV == "development") {
+                console.log(e.data)
+              }
+              const message = JSON.parse(e.data)
+              if (message.status == "parsing") {
+                this.$data.btnText = "正在解析"
+                this.$store.state.textFieldDisabled = true
+                this.$store.state.btnDisabled = true
+                this.$store.state.theState = State.PARSING
+              } else if (message.status == "downloading") {
+                this.$data.btnText = "正在远程下载"
+                this.$store.state.theState = State.DOWNLOADING
+                this.$store.state.progress = message.text
                 } else if (message.status == "checking out") {
                     this.$data.btnText = "正在检出代码"
                     this.$store.state.theState = State.CHECKING_OUT

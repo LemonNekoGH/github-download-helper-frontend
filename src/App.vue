@@ -20,30 +20,30 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import {State} from "@/store";
+import Vue from 'vue';
+import {State} from "@/store";
 
-    export default Vue.extend({
-        name: 'App',
-        data: () => ({
-            toolbarTitle: "Github代下载服务",
-            snackbar: false
-        }),
-        mounted() {
-            this.$router.beforeEach((to, from, next) => {
-                this.$store.state.showAppBarIcon = to.path == "/about"
-                if (to.path == "/about"){
-                    this.$data.toolbarTitle = "Github代下载服务 - 关于"
-                    if (this.$store.state.theState != State.READY &&
-                        this.$store.state.theState != State.COMPLETED){
-                        this.$data.snackbar = true
-                        setTimeout(() => this.$data.snackbar = false,3000)
-                    }
-                }else{
-                    this.$data.toolbarTitle = "Github代下载服务"
-                }
-                next()
-            })
+export default Vue.extend({
+  name: 'App',
+  data: () => ({
+    toolbarTitle: "Github资源下载助手",
+    snackbar: false
+  }),
+  mounted() {
+    this.$router.beforeEach((to, from, next) => {
+      this.$store.state.showAppBarIcon = to.path == "/about"
+      if (to.path == "/about") {
+        this.$data.toolbarTitle = "Github资源下载助手 - 关于"
+        if (this.$store.state.theState != State.READY &&
+            this.$store.state.theState != State.COMPLETED) {
+          this.$data.snackbar = true
+          setTimeout(() => this.$data.snackbar = false, 3000)
+        }
+      } else {
+        this.$data.toolbarTitle = "Github资源下载助手"
+      }
+      next()
+    })
             window.onbeforeunload = () => {
                 if (this.$store.state.theState !== 0 &&
                 this.$store.state.theState !== 5 &&

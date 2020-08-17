@@ -4,9 +4,9 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 let prefix = "";
-if (process.env.VUE_APP_MODE == "development"){
+if (process.env.NODE_ENV == "development") {
   prefix = "ws://localhost:4000/checkout"
-}else if (process.env.VUE_APP_MODE == "production"){
+} else if (process.env.NODE_ENV == "production") {
   prefix = "ws://8.210.48.126:4000/checkout"
 }
 
