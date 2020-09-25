@@ -4,15 +4,10 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 let prefix = "";
-if (location.protocol == "http:") {
-  prefix = "ws"
-} else if (location.protocol == "https:") {
-  prefix = "wss"
-}
 if (process.env.NODE_ENV == "development") {
-  prefix += "://localhost:4000/checkout"
+  prefix += "ws://localhost:4000/websocket"
 } else if (process.env.NODE_ENV == "production") {
-  prefix += "://gdhb.lemonneko.moe:4000/checkout"
+  prefix += "ws://gdhb.lemonneko.moe:4000/websocket"
 }
 
 export enum State{
@@ -22,7 +17,9 @@ export enum State{
   DOWNLOADING,
   COMPRESSING,
   COMPLETED,
-  ERROR
+  ERROR,
+  CHECKING,
+  CHECKED
 }
 
 let _ws = new WebSocket(prefix)

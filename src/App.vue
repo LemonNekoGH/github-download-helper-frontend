@@ -1,22 +1,23 @@
 <template>
-    <v-app>
-        <v-app-bar app elevate-on-scroll>
-            <v-btn icon v-if="$store.state.showAppBarIcon" @click="returnToMain"><v-icon>mdi-arrow-left</v-icon></v-btn>
-            <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
-        </v-app-bar>
-        <v-content app>
-            <v-divider></v-divider>
-            <v-fade-transition mode="out-in">
-                <router-view></router-view>
-            </v-fade-transition>
-            <v-snackbar v-model="snackbar" color="orange">已切换到后台继续进行</v-snackbar>
-        </v-content>
-        <v-footer>
-            <div></div>
-            <v-spacer></v-spacer>
-            <div>&copy;&nbsp;{{new Date().getFullYear()}} | <router-link style="text-decoration: none" to="/about">关于本站</router-link></div>
-        </v-footer>
-    </v-app>
+  <v-app>
+    <v-app-bar app elevate-on-scroll>
+      <v-btn @click="returnToMain" icon v-if="$store.state.showAppBarIcon">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+      <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon to="/about">
+        <v-icon>mdi-information-outline</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-content app>
+      <v-divider></v-divider>
+      <v-fade-transition mode="out-in">
+        <router-view></router-view>
+      </v-fade-transition>
+      <v-snackbar color="orange" v-model="snackbar">已切换到后台继续进行</v-snackbar>
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -44,18 +45,18 @@ export default Vue.extend({
       }
       next()
     })
-            window.onbeforeunload = () => {
-                if (this.$store.state.theState !== 0 &&
-                this.$store.state.theState !== 5 &&
-                this.$store.state.theState !== 6){
-                    return window.confirm()
-                }
-            }
-        },
-        methods: {
-            returnToMain(){
-                this.$router.replace("/")
-            }
-        }
-    });
+    window.onbeforeunload = () => {
+      if (this.$store.state.theState !== 0 &&
+          this.$store.state.theState !== 5 &&
+          this.$store.state.theState !== 6) {
+        return window.confirm()
+      }
+    }
+  },
+  methods: {
+    returnToMain() {
+      this.$router.replace("/")
+    }
+  }
+});
 </script>
