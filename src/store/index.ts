@@ -7,7 +7,7 @@ let prefix = "";
 if (process.env.NODE_ENV == "development") {
   prefix += "ws://localhost:4000/websocket"
 } else if (process.env.NODE_ENV == "production") {
-  prefix += "ws://gdhb.lemonneko.moe:4000/websocket"
+  prefix += "ws://gdh.lemonneko.moe:4000/websocket"
 }
 
 export enum State{

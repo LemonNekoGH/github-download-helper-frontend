@@ -144,7 +144,7 @@ export default Vue.extend({
         if (process.env.NODE_ENV == "development") {
           prefix = "http://localhost:4000/file?fileName="
         } else {
-          prefix = "http://8.210.48.126:4000/file?fileName="
+          prefix = "http://gdh.lemonneko.moe:4000/file?fileName="
         }
         this.$store.state.downloadUrl = prefix + message.text
       } else if (message.status == "error") {
