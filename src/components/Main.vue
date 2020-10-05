@@ -4,7 +4,7 @@
       <v-col cols="10" lg="6" md="7" sm="7" xl="6">
         <v-text-field
             :disabled="$store.state.textFieldDisabled"
-            :loading="$store.state.theState !== 0
+            :loading="$store.state.theState !== 0 && $store.state.theState !== 2
                         && $store.state.theState !== 5 && $store.state.theState !== 7"
             @click:append="help = true"
             append-icon="mdi-help-circle-outline" filled label="在此输入URL"
@@ -15,7 +15,7 @@
             <v-progress-linear
                 :value="$store.state.progress"
                 absolute
-                v-if="$store.state.theState === 3"
+                v-if="$store.state.theState === 3 || $store.state.theState === 2"
             ></v-progress-linear>
           </template>
         </v-text-field>
@@ -133,7 +133,10 @@ export default Vue.extend({
         this.$store.state.progress = message.text
       } else if (message.status == "checking out") {
         this.$data.btnText = "正在检出代码"
+        this.$store.state.textFieldDisabled = false
+        this.$store.state.progress = message.text
         this.$store.state.theState = State.CHECKING_OUT
+        this.$store.state.btnDisabled = true
       } else if (message.status == "compressing") {
         this.$data.btnText = "正在打包"
         this.$store.state.theState = State.COMPRESSING
@@ -161,6 +164,8 @@ export default Vue.extend({
           this.$store.state.btnDisabled = true
           this.$store.state.theState = State.CHECKING
         }
+      } else if (message.online) {
+        this.$store.state.onlineNumber = message.online
       }
     },
     reset() {

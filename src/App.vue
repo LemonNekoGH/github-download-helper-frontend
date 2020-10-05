@@ -4,7 +4,7 @@
       <v-btn @click="returnToMain" icon v-if="$store.state.showAppBarIcon">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
+      <v-toolbar-title v-text="toolbarTitle + ' - 当前有' + $store.state.onlineNumber + '人正在使用'"></v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon to="/about">
         <v-icon>mdi-information-outline</v-icon>

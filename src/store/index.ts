@@ -63,7 +63,8 @@ export default new Vuex.Store({
     progress: 0,
     disconnected: false,
     failed: false,
-    unsupported: false
+    unsupported: false,
+    onlineNumber: 0
   },
   mutations: {
   },
