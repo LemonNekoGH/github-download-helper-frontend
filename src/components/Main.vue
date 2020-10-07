@@ -4,8 +4,8 @@
       <v-col cols="10" lg="6" md="7" sm="7" xl="6">
         <v-text-field
             :disabled="$store.state.textFieldDisabled"
-            :loading="$store.state.theState !== 0 && $store.state.theState !== 2
-                        && $store.state.theState !== 5 && $store.state.theState !== 7"
+            :loading="$store.state.theState !== 0
+                        && $store.state.theState !== 5 && $store.state.theState !== 7 && $store.state.theState !== 8"
             @click:append="help = true"
             append-icon="mdi-help-circle-outline" filled label="在此输入URL"
             prepend-inner-icon="mdi-github"
@@ -103,7 +103,7 @@ export default Vue.extend({
     this.$store.state.closeListeners.add(this.onClose)
   },
   methods: {
-    getDownloadLink(response: string) {
+    getDownloadLink: function (response: string) {
       const url = this.$store.state.urlToDownload
       if (url == "") {
         this.$data.snackbar = true
@@ -112,9 +112,32 @@ export default Vue.extend({
       }
       const ws = this.$store.state.ws
       if (!this.$data.recaptchaComplete) {
-        ws.send("token:" + response)
+        ws.send(JSON.stringify({
+          request: "check",
+          token: response
+        }))
       } else {
-        ws.send(url)
+        const downloadRegex = /^((https:\/\/github\.com\/([a-zA-Z0-9\-]+\/){2}releases\/download\/[a-zA-Z0-9\-.]+\/[a-zA-Z0-9\-.]+\/?)|(https:\/\/github\.com\/([a-zA-Z0-9\-]+\/){2}archive\/[a-zA-Z0-9\-.]+\/?)|(https:\/\/codeload\.github\.com\/([a-zA-Z0-9\-]+\/){2}zip\/[a-zA-Z0-9\-.]+\/?)|(https:\/\/raw\.githubusercontent\.com\/([a-zA-Z0-9\-]+\/){2}([a-zA-Z0-9\-_.+]+\/)+[a-zA-Z0-9\-._+]+))$/
+        const repoRegex = /^(https:\/\/github\.com\/[a-zA-Z0-9\-.]+\/[a-zA-Z0-9\-.]+(\.git)?)$/
+        let object = {}
+        if (url.match(downloadRegex)) {
+          object = {
+            request: "download",
+            url: url
+          }
+          console.log(object)
+        } else if (url.match(repoRegex)) {
+          object = {
+            request: "clone",
+            url: url
+          }
+          console.log(object)
+        } else {
+          console.log("错误的格式")
+          this.$data.errorMessage = "格式错误，请点击问号按钮查看帮助"
+          return
+        }
+        ws.send(JSON.stringify(object))
       }
     },
     onMessage(ws: WebSocket, e: MessageEvent) {
@@ -141,13 +164,14 @@ export default Vue.extend({
         this.$data.btnText = "正在打包"
         this.$store.state.theState = State.COMPRESSING
       } else if (message.status == "completed") {
+        this.$store.state.textFieldDisabled = true
         this.$store.state.readyToDownload = true
         this.$store.state.theState = State.COMPLETED
         let prefix = ""
         if (process.env.NODE_ENV == "development") {
-          prefix = "http://localhost:4000/file?fileName="
+          prefix = "http://localhost:4000/files/"
         } else {
-          prefix = "http://gdh.lemonneko.moe:4000/file?fileName="
+          prefix = "http://gdh.lemonneko.moe:4000/files/"
         }
         this.$store.state.downloadUrl = prefix + message.text
       } else if (message.status == "error") {
@@ -159,6 +183,7 @@ export default Vue.extend({
           this.$data.btnText = "验证通过，再次点击即可继续"
           this.$store.state.btnDisabled = false
           this.$store.state.textFieldDisabled = false
+          this.$store.state.theState = State.CHECKED
         } else {
           this.$data.btnText = "正在验证"
           this.$store.state.btnDisabled = true

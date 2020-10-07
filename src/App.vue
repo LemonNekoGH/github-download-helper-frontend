@@ -46,6 +46,7 @@ export default Vue.extend({
       next()
     })
     window.onbeforeunload = () => {
+      this.$store.state.ws.close(1000)
       if (this.$store.state.theState !== 0 &&
           this.$store.state.theState !== 5 &&
           this.$store.state.theState !== 6) {
