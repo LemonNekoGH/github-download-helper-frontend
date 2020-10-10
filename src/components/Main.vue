@@ -101,6 +101,17 @@ export default Vue.extend({
   mounted() {
     this.$store.state.messageListeners.add(this.onMessage)
     this.$store.state.closeListeners.add(this.onClose)
+
+    const ws = this.$store.state.ws
+    const keepAliveMessage = JSON.stringify({
+      request: "keepAlive"
+    })
+
+    function keepAlive() {
+      ws.send(keepAliveMessage)
+    }
+
+    setInterval(keepAlive, 5000)
   },
   methods: {
     getDownloadLink: function (response: string) {
